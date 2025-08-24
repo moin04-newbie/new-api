@@ -11,94 +11,67 @@ service cloud.firestore {
       allow read, write: if isAuthenticated() && request.auth.uid == userId;
     }
     
-    // User profiles - users can only access their own profile
-    match /userProfiles/{profileId} {
-      allow read, write: if isAuthenticated() && request.auth.uid == profileId;
-    }
-    
-    // Workspaces - simplified rules for initial access
+    // Workspaces - users can only access workspaces they own or are members of
     match /workspaces/{workspaceId} {
       allow read, write: if isAuthenticated() && 
         (resource == null || 
          resource.data.createdBy == request.auth.uid ||
-         request.auth.uid in resource.data.members[*].userId);
+         request.auth.uid in resource.data.members);
     }
     
-    // Projects - users can access projects they created or in their workspaces
+    // Projects - simplified rules
     match /projects/{projectId} {
       allow read, write: if isAuthenticated() && 
         (resource == null || 
-         resource.data.createdBy == request.auth.uid ||
-         resource.data.workspaceId == null ||
-         exists(/databases/$(database)/documents/workspaces/$(resource.data.workspaceId)) &&
-         (get(/databases/$(database)/documents/workspaces/$(resource.data.workspaceId)).data.createdBy == request.auth.uid ||
-          request.auth.uid in get(/databases/$(database)/documents/workspaces/$(resource.data.workspaceId)).data.members[*].userId));
+         resource.data.createdBy == request.auth.uid);
     }
     
-    // API Keys - users can access their own API keys
+    // API Keys - users can only access their own API keys
     match /apiKeys/{apiKeyId} {
       allow read, write: if isAuthenticated() && 
-        (resource == null || resource.data.userId == request.auth.uid);
+        (resource == null || 
+         resource.data.userId == request.auth.uid ||
+         resource.data.createdBy == request.auth.uid ||
+         resource.data.uid == request.auth.uid);
     }
     
-    // Team Members - simplified access
+    // Team Members - simplified rules
     match /teamMembers/{memberId} {
       allow read, write: if isAuthenticated() && 
         (resource == null || 
-         resource.data.createdBy == request.auth.uid ||
-         resource.data.workspaceId == null ||
-         exists(/databases/$(database)/documents/workspaces/$(resource.data.workspaceId)) &&
-         (get(/databases/$(database)/documents/workspaces/$(resource.data.workspaceId)).data.createdBy == request.auth.uid ||
-          request.auth.uid in get(/databases/$(database)/documents/workspaces/$(resource.data.workspaceId)).data.members[*].userId));
+         resource.data.ownerId == request.auth.uid);
     }
     
-    // Sources - simplified access
+    // Sources - simplified rules
     match /sources/{sourceId} {
       allow read, write: if isAuthenticated() && 
         (resource == null || 
-         resource.data.sharedBy == request.auth.uid ||
-         resource.data.workspaceId == null ||
-         exists(/databases/$(database)/documents/workspaces/$(resource.data.workspaceId)) &&
-         (get(/databases/$(database)/documents/workspaces/$(resource.data.workspaceId)).data.createdBy == request.auth.uid ||
-          request.auth.uid in get(/databases/$(database)/documents/workspaces/$(resource.data.workspaceId)).data.members[*].userId));
+         resource.data.ownerId == request.auth.uid);
     }
     
-    // Chat Messages - simplified access
+    // Chat Messages - simplified rules
     match /chatMessages/{messageId} {
       allow read, write: if isAuthenticated() && 
         (resource == null || 
-         resource.data.senderId == request.auth.uid ||
-         resource.data.workspaceId == null ||
-         exists(/databases/$(database)/documents/workspaces/$(resource.data.workspaceId)) &&
-         (get(/databases/$(database)/documents/workspaces/$(resource.data.workspaceId)).data.createdBy == request.auth.uid ||
-          request.auth.uid in get(/databases/$(database)/documents/workspaces/$(resource.data.workspaceId)).data.members[*].userId));
+         resource.data.userId == request.auth.uid);
     }
     
-    // Progress Goals - users can access their own goals
+    // Progress Goals - users can only access their own goals
     match /progressGoals/{goalId} {
       allow read, write: if isAuthenticated() && 
         (resource == null || resource.data.userId == request.auth.uid);
     }
     
-    // Activity Logs - simplified access
+    // Activity Logs - simplified rules
     match /activities/{activityId} {
       allow read, write: if isAuthenticated() && 
         (resource == null || 
-         resource.data.userId == request.auth.uid ||
-         resource.data.workspaceId == null ||
-         exists(/databases/$(database)/documents/workspaces/$(resource.data.workspaceId)) &&
-         (get(/databases/$(database)/documents/workspaces/$(resource.data.workspaceId)).data.createdBy == request.auth.uid ||
-          request.auth.uid in get(/databases/$(database)/documents/workspaces/$(resource.data.workspaceId)).data.members[*].userId));
+         resource.data.userId == request.auth.uid);
     }
     
-    // Allow authenticated users to create initial workspace and profile
+    // Fallback rule for any other collections
     match /{document=**} {
-      allow read, write: if isAuthenticated() && 
-        (resource == null || 
-         resource.data.createdBy == request.auth.uid ||
-         resource.data.userId == request.auth.uid ||
-         resource.data.senderId == request.auth.uid ||
-         resource.data.sharedBy == request.auth.uid);
+      allow read, write: if isAuthenticated();
     }
   }
 }

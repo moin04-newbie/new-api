@@ -35,6 +35,8 @@ export interface ApiKey {
   projectId?: string
   userId: string // Required field for user isolation
   workspaceId: string // Required field for workspace isolation
+  createdBy: string // Required field for Firestore rules
+  uid: string // Required field for Firestore rules
   status: 'active' | 'inactive' | 'expired' | 'revoked'
   createdAt: string
   lastUsed?: string
@@ -528,13 +530,33 @@ export function WorkspaceProvider({ children }: WorkspaceProviderProps) {
       id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       userId: currentUserId, // Ensure user isolation
       workspaceId: currentWorkspace.id, // Ensure workspace isolation
-      createdAt: new Date().toISOString()
+      createdBy: currentUserId, // Required for Firestore rules
+      uid: currentUserId, // Required for Firestore rules
+      createdAt: new Date().toISOString(),
+      // Ensure all fields have proper default values (no undefined)
+      name: apiKey.name || "",
+      serviceName: apiKey.serviceName || "",
+      description: apiKey.description || "",
+      key: apiKey.key || "",
+      project: apiKey.project || "",
+      environment: apiKey.environment || "development",
+      status: (apiKey.status as 'active' | 'inactive' | 'expired' | 'revoked') || "active",
+      website: apiKey.website || "",
+      docsUrl: apiKey.docsUrl || "",
+      monthlyLimit: typeof apiKey.monthlyLimit === "number" ? apiKey.monthlyLimit : 0,
+      monthlyCost: typeof apiKey.monthlyCost === "number" ? apiKey.monthlyCost : 0,
+      tags: Array.isArray(apiKey.tags) ? apiKey.tags : [],
+      requests: 0,
+      lastUsed: new Date().toISOString(),
+      expiresAt: apiKey.expiresAt || ""
     }
     
     try {
       // Save to Firestore
       const { addDoc, collection } = await import('firebase/firestore')
       const { db } = await import('./firebase')
+      
+      console.log('Sending API key to Firestore:', newApiKey)
       
       const apiKeysRef = collection(db, 'apiKeys')
       await addDoc(apiKeysRef, newApiKey)

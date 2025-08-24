@@ -262,6 +262,9 @@ export async function createApiKey(input: {
         project: input.project || "",
         projectId: input.projectId || "",
         userId: input.userId || (typeof window !== "undefined" ? auth.currentUser?.uid || "" : ""),
+        createdBy: typeof window !== "undefined" ? auth.currentUser?.uid || "" : "",
+        uid: typeof window !== "undefined" ? auth.currentUser?.uid || "" : "",
+        workspaceId: "", // Will be set by the workspace context
         status: input.status || "active",
         createdAt: now,
         lastUsed: now,

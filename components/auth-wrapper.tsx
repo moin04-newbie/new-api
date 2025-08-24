@@ -30,24 +30,29 @@ export function AuthWrapper({ children }: AuthWrapperProps) {
 
   useEffect(() => {
     // Check if Firebase is properly configured
-    if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
-      setError("Firebase configuration is missing. Please check your environment variables.")
-      setIsLoading(false)
-      return
+    if (typeof window !== 'undefined' && !process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+      console.warn("Firebase configuration might be missing. Please check your environment variables.")
     }
 
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setIsLoading(false)
-      if (user) {
-        setIsAuthenticated(true)
-        setShowLogin(false)
-      } else {
-        setIsAuthenticated(false)
-        setShowLogin(true)
-      }
-    })
+    try {
+      const unsubscribe = auth.onAuthStateChanged((user) => {
+        console.log("Auth state changed:", user ? "User authenticated" : "No user")
+        setIsLoading(false)
+        if (user) {
+          setIsAuthenticated(true)
+          setShowLogin(false)
+        } else {
+          setIsAuthenticated(false)
+          setShowLogin(true)
+        }
+      })
 
-    return unsubscribe
+      return unsubscribe
+    } catch (error) {
+      console.error("Firebase auth error:", error)
+      setIsLoading(false)
+      setError("Firebase authentication is not available. Please check your configuration.")
+    }
   }, [])
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
@@ -118,18 +123,12 @@ export function AuthWrapper({ children }: AuthWrapperProps) {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-                      {error && (
-            <div className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700">
-              <AlertCircle className="h-4 w-4" />
-              <span className="text-sm">{error}</span>
-              {error.includes("Firebase configuration") && (
-                <div className="mt-2 text-xs">
-                  <p>Please create a <code className="bg-red-100 px-1 rounded">.env.local</code> file with your Firebase configuration.</p>
-                  <p>See <code className="bg-red-100 px-1 rounded">env-template.txt</code> for the required variables.</p>
-                </div>
-              )}
-            </div>
-          )}
+            {error && (
+              <div className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                <AlertCircle className="h-4 w-4" />
+                <span className="text-sm">{error}</span>
+              </div>
+            )}
 
             <form onSubmit={handleEmailSignIn} className="space-y-4">
               <div className="space-y-2">

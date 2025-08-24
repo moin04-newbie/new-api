@@ -34,7 +34,7 @@ import {
   RefreshCw,
 } from "lucide-react"
 
-import { fetchApiKeys, createApiKey, deleteApiKey, type ApiKey } from "@/lib/firestore"
+import { fetchApiKeys, deleteApiKey, type ApiKey } from "@/lib/firestore"
 import { getPlan } from "@/lib/subscription"
 import { encryptApiKey, generateSecurePassphrase, decryptApiKey } from "@/lib/utils"
 import { useWorkspace } from "@/lib/workspace-context"
@@ -52,7 +52,10 @@ export default function APIKeysPage() {
     totalApiKeys, 
     activeApiKeys,
     refreshApiKeys,
-    addActivity
+    addActivity,
+    addApiKey,
+    currentUserId,
+    currentWorkspace
   } = useWorkspace()
   // New API Key form state
   const [serviceName, setServiceName] = useState("")
@@ -162,15 +165,14 @@ export default function APIKeysPage() {
         name: newName.trim(),
         serviceName: serviceName.trim(),
         description: newDesc.trim(),
-      key: apiKeyValue.trim(),
+        key: apiKeyValue.trim(),
         project: newProject.trim(),
         environment: newEnv,
         status: newStatus,
         website: website.trim(),
         docsUrl: docsUrl.trim(),
-        monthlyLimit: monthlyLimit ? Number(monthlyLimit) : undefined,
-        monthlyCost: monthlyCost ? Number(monthlyCost) : undefined,
-
+        monthlyLimit: monthlyLimit ? Number(monthlyLimit) : 0,
+        monthlyCost: monthlyCost ? Number(monthlyCost) : 0,
         tags,
       })
     
@@ -193,18 +195,28 @@ export default function APIKeysPage() {
     try {
       const encryptedKey = await encryptApiKey(tempApiKeyData.key, encryptionPassphrase.trim())
       
-      // Create the API key first
-      const apiKeyId = await createApiKey({
-        ...tempApiKeyData,
+      // Create the API key using workspace context
+      await addApiKey({
+        name: tempApiKeyData.name,
+        serviceName: tempApiKeyData.serviceName,
+        description: tempApiKeyData.description,
         key: encryptedKey,
-      })
-      
-      // Add activity for API key creation
-      addActivity({
-        type: 'api',
-        action: 'create',
-        description: `Created new API key: ${tempApiKeyData.name}`,
-        user: 'Current User'
+        project: tempApiKeyData.project,
+        environment: tempApiKeyData.environment,
+        status: tempApiKeyData.status,
+        website: tempApiKeyData.website,
+        docsUrl: tempApiKeyData.docsUrl,
+        monthlyLimit: tempApiKeyData.monthlyLimit,
+        monthlyCost: tempApiKeyData.monthlyCost,
+        tags: tempApiKeyData.tags,
+        userId: currentUserId || "",
+        workspaceId: currentWorkspace?.id || "",
+        createdBy: currentUserId || "",
+        uid: currentUserId || "",
+        projectId: tempApiKeyData.project || "",
+        requests: 0,
+        lastUsed: new Date().toISOString(),
+        expiresAt: ""
       })
       
       // Refresh API keys from shared context
@@ -233,7 +245,8 @@ export default function APIKeysPage() {
       setTagEntry("")
       setNewProject("")
     } catch (error) {
-      alert("Failed to encrypt API key: " + error)
+      console.error("Error creating API key:", error)
+      alert("Failed to create API key: " + (error instanceof Error ? error.message : String(error)))
     }
   }
 
@@ -517,47 +530,6 @@ export default function APIKeysPage() {
             <div className="grid gap-2">
               <Label>Description (Optional)</Label>
               <Textarea placeholder="Brief description of what this API key is used for..." value={newDesc} onChange={(e) => setNewDesc(e.target.value)} />
-            </div>
-
-            {/* Links */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label>Service Website (Optional)</Label>
-                <Input placeholder="https://openai.com" value={website} onChange={(e) => setWebsite(e.target.value)} />
-              </div>
-              <div className="grid gap-2">
-                <Label>API Documentation (Optional)</Label>
-                <Input placeholder="https://platform.openai.com/docs" value={docsUrl} onChange={(e) => setDocsUrl(e.target.value)} />
-              </div>
-            </div>
-
-            {/* Numbers */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="grid gap-2">
-                <Label>Monthly Usage Limit (Optional)</Label>
-                <Input type="number" placeholder="1000" value={monthlyLimit} onChange={(e) => setMonthlyLimit(e.target.value)} />
-              </div>
-              <div className="grid gap-2">
-                <Label>Monthly Cost (Optional)</Label>
-                <Input type="number" placeholder="29.99" value={monthlyCost} onChange={(e) => setMonthlyCost(e.target.value)} />
-              </div>
-
-            </div>
-
-            {/* Tags */}
-            <div className="grid gap-2">
-              <Label>Tags (Optional)</Label>
-              <div className="flex gap-2">
-                <Input placeholder="Add a tag..." value={tagEntry} onChange={(e) => setTagEntry(e.target.value)} />
-                <Button type="button" variant="outline" onClick={() => { if (tagEntry.trim()) { setTags([...tags, tagEntry.trim()]); setTagEntry("") } }}>Add</Button>
-              </div>
-              {tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 text-xs text-gray-700">
-                  {tags.map((t, i) => (
-                    <span key={`${t}-${i}`} className="px-2 py-1 rounded-full bg-gray-100 border border-gray-200">{t}</span>
-                  ))}
-                </div>
-              )}
             </div>
 
             {/* Project */}
