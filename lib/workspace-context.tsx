@@ -23,6 +23,7 @@ export interface Member {
   lastActive?: string
   projects?: string[]
   ownerId?: string
+  workspaceId?: string
 }
 
 // API Key Types
@@ -438,20 +439,45 @@ export function WorkspaceProvider({ children }: WorkspaceProviderProps) {
   }, [currentWorkspace, currentUserId, addActivity])
 
   const addTeamMember = useCallback(async (member: Omit<Member, 'id'>) => {
-    const newMember: Member = {
-      ...member,
-      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    if (!currentWorkspace || !currentUserId) {
+      console.error('Cannot add team member: No workspace or user ID')
+      return
     }
-    
-    setTeamMembers(prev => [...prev, newMember])
-    
-    addActivity({
-      type: 'team',
-      action: 'added',
-      description: `Team member "${newMember.name}" added`,
-      user: 'System'
-    })
-  }, [addActivity])
+
+    try {
+      // Add to Firestore first
+      const { collection, addDoc } = await import('firebase/firestore')
+      const { db } = await import('./firebase')
+      
+      const newMemberData = {
+        ...member,
+        workspaceId: currentWorkspace.id,
+        ownerId: currentUserId,
+        joinedAt: new Date().toISOString(),
+        lastActive: 'just now'
+      }
+      
+      const docRef = await addDoc(collection(db, 'teamMembers'), newMemberData)
+      
+      // Then update local state
+      const newMember: Member = {
+        ...member,
+        id: docRef.id
+      }
+      
+      setTeamMembers(prev => [...prev, newMember])
+      
+      addActivity({
+        type: 'team',
+        action: 'added',
+        description: `Team member "${newMember.name}" added`,
+        user: 'System'
+      })
+    } catch (error) {
+      console.error('Failed to add team member to Firestore:', error)
+      throw error
+    }
+  }, [addActivity, currentWorkspace, currentUserId])
 
   const updateTeamMember = useCallback(async (id: string, updates: Partial<Member>) => {
     setTeamMembers(prev => prev.map(member => 
@@ -865,23 +891,30 @@ export function WorkspaceProvider({ children }: WorkspaceProviderProps) {
     if (!currentWorkspace || !currentUserId) return
     
     try {
-      // Fetch chat messages from Firestore for current workspace
-      const { collection, query, where, getDocs, orderBy, limit } = await import('firebase/firestore')
+      // Fetch chat messages from Firestore for current workspace - SIMPLIFIED QUERY
+      const { collection, query, where, getDocs, limit } = await import('firebase/firestore')
       const { db } = await import('./firebase')
       
       const messagesRef = collection(db, 'chatMessages')
+      // Simplified query without orderBy to avoid complex index requirements
       const q = query(
         messagesRef,
         where('workspaceId', '==', currentWorkspace.id),
-        orderBy('timestamp', 'desc'),
         limit(50)
       )
       
       const snapshot = await getDocs(q)
-      const fetchedMessages: ChatMessage[] = snapshot.docs.map(doc => ({
+      let fetchedMessages: ChatMessage[] = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       })) as ChatMessage[]
+      
+      // Sort locally instead of in Firestore query
+      fetchedMessages = fetchedMessages.sort((a, b) => {
+        const timeA = new Date(a.timestamp || 0).getTime()
+        const timeB = new Date(b.timestamp || 0).getTime()
+        return timeB - timeA // Descending order (newest first)
+      })
       
       console.log('Setting chat messages from Firestore:', fetchedMessages)
       setChatMessages(fetchedMessages)

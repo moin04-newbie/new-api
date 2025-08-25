@@ -35,4 +35,6 @@ coverage/
 .parcel-cache/
 
 # Vercel/Deploy
-.vercel/
+.vercel/.env
+.env.*
+!.env.example

@@ -13,7 +13,7 @@ export default function HelpPage() {
         <Card>
           <CardHeader>
             <CardTitle>Documentation</CardTitle>
-            <CardDescription>Learn how to use KeyNest</CardDescription>
+            <CardDescription>Learn how to use DevHub</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-gray-600 text-sm mb-4">Guides for creating projects, managing API keys, and setting up teams.</p>

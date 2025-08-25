@@ -153,7 +153,7 @@ export default function WorkspacePage() {
         email: "",
         bio: "",
         skills: [],
-        portfolio: {
+    portfolio: {
           github: "",
           linkedin: "",
           website: ""
@@ -166,7 +166,7 @@ export default function WorkspacePage() {
       email: userProfile.email || "",
       bio: (userProfile as any).bio || "",
       skills: Array.isArray((userProfile as any).skills) ? (userProfile as any).skills : [],
-      portfolio: {
+    portfolio: {
         github: (userProfile as any).github || "",
         linkedin: (userProfile as any).linkedin || "",
         website: (userProfile as any).website || ""
@@ -216,15 +216,15 @@ export default function WorkspacePage() {
         sharedBy: currentUserId || "",
         workspaceId: currentWorkspace?.id || ""
     })
-      
-      setShowSourceDialog(false)
-      setNewSource({
-        title: "",
-        description: "",
+    
+    setShowSourceDialog(false)
+    setNewSource({
+      title: "",
+      description: "",
         type: "article",
-        tags: "",
-        url: ""
-      })
+      tags: "",
+      url: ""
+    })
     } catch (error) {
       console.error('Failed to create source:', error)
     }
@@ -242,7 +242,7 @@ export default function WorkspacePage() {
         workspaceId: currentWorkspace?.id || ""
       })
       
-      setNewMessage("")
+    setNewMessage("")
     } catch (error) {
       console.error('Failed to send message:', error)
     }
@@ -252,25 +252,25 @@ export default function WorkspacePage() {
     try {
       // Use the workspace context to add team member
       await addTeamMember({
-        name: newMember.name,
+      name: newMember.name,
         email: newMember.email,
-        role: newMember.role,
+      role: newMember.role,
         avatar: "/placeholder-user.jpg",
         joinedAt: new Date().toISOString(),
         lastActive: new Date().toISOString(),
         projects: [],
         ownerId: currentUserId || ""
-      })
-      
-      setShowAddMemberDialog(false)
-      setNewMember({
-        name: "",
-        email: "",
-        role: "member",
-        currentRole: "",
-        skills: "",
-        bio: ""
-      })
+    })
+    
+    setShowAddMemberDialog(false)
+    setNewMember({
+      name: "",
+      email: "",
+      role: "member",
+      currentRole: "",
+      skills: "",
+      bio: ""
+    })
     } catch (error) {
       console.error('Failed to add team member:', error)
     }
@@ -339,19 +339,19 @@ export default function WorkspacePage() {
         createdBy: currentUserId || "",
         workspaceId: currentWorkspace?.id || ""
     })
-      
-      setShowNewProjectDialog(false)
-      setNewProject({
-        title: "",
-        description: "",
-        status: "planning",
-        priority: "medium",
-        startDate: "",
-        dueDate: "",
-        category: "",
-        tags: "",
-        budget: ""
-      })
+    
+    setShowNewProjectDialog(false)
+    setNewProject({
+      title: "",
+      description: "",
+      status: "planning",
+      priority: "medium",
+      startDate: "",
+      dueDate: "",
+      category: "",
+      tags: "",
+      budget: ""
+    })
     } catch (error) {
       console.error('Failed to create project:', error)
     }
@@ -363,11 +363,11 @@ export default function WorkspacePage() {
 
   const filteredSources = useMemo(() => {
     return sources.filter(source => {
-      const matchesSearch = source.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           source.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           source.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    const matchesSearch = source.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         source.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         source.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
       return matchesSearch
-    })
+  })
   }, [sources, searchQuery])
 
   return (
@@ -446,8 +446,8 @@ export default function WorkspacePage() {
                  <p className="text-2xl font-bold text-gray-900">{totalMembers}</p>
                </div>
              </div>
-           </div>
-         </div>
+          </div>
+       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
                  <TabsList className="grid w-full grid-cols-6">
@@ -653,20 +653,20 @@ export default function WorkspacePage() {
                
                <div className="h-96 overflow-y-auto p-6 space-y-6">
                  {chatMessages.map(message => (
-                   <div key={message.id} className="flex space-x-4">
-                     <Avatar className="w-10 h-10 flex-shrink-0 border-2 border-gray-100">
+                     <div key={message.id} className="flex space-x-4">
+                       <Avatar className="w-10 h-10 flex-shrink-0 border-2 border-gray-100">
                        <AvatarImage src="/placeholder-user.jpg" />
                        <AvatarFallback className="text-sm">U</AvatarFallback>
-                     </Avatar>
-                     <div className="flex-1">
-                       <div className="flex items-center space-x-3 mb-2">
+                       </Avatar>
+                       <div className="flex-1">
+                         <div className="flex items-center space-x-3 mb-2">
                          <span className="font-semibold text-gray-900">You</span>
                          <span className="text-xs text-gray-400">{message.timestamp}</span>
+                         </div>
+                         <p className="text-gray-800 text-lg leading-relaxed">{message.content}</p>
                        </div>
-                       <p className="text-gray-800 text-lg leading-relaxed">{message.content}</p>
                      </div>
-                   </div>
-                 ))}
+                   ))}
                </div>
 
                <div className="p-6 border-t border-gray-100">
@@ -699,7 +699,7 @@ export default function WorkspacePage() {
            <div className="p-8 border border-gray-200 rounded-3xl shadow-sm">
              <div className="flex items-center justify-between mb-6">
                <div className="flex items-center space-x-3">
-                 <h3 className="text-3xl font-bold text-blue-900">My Profile</h3>
+               <h3 className="text-3xl font-bold text-blue-900">My Profile</h3>
                  <Badge variant="outline" className="text-xs">
                    Account data
                  </Badge>
@@ -708,9 +708,9 @@ export default function WorkspacePage() {
               initializeEditingProfile()
               setShowProfileDialog(true)
             }} variant="outline" size="lg" className="border-blue-300 text-blue-700 hover:bg-blue-100 px-6 py-3 rounded-xl">
-              <Edit className="h-5 w-5 mr-2" />
-              Edit Profile
-            </Button>
+                 <Edit className="h-5 w-5 mr-2" />
+                 Edit Profile
+               </Button>
              </div>
              <div className="flex items-start space-x-8">
                <Avatar className="w-24 h-24 border-4 border-white shadow-xl">
@@ -782,7 +782,7 @@ export default function WorkspacePage() {
                        </div>
                      </div>
                      <div className="grid gap-8">
-                       {teamMembers.map((member, index) => (
+             {teamMembers.map((member, index) => (
                <div key={member.id} className={`border rounded-2xl hover:shadow-lg transition-all duration-300 ${
                  index % 2 === 0 ? 'p-8' : 'p-7'
                }`}>
@@ -822,7 +822,7 @@ export default function WorkspacePage() {
                        {/* Skills not available in Member type - using empty state */}
                        <Badge variant="outline" className="px-3 py-1 text-sm">
                          No skills listed
-                       </Badge>
+                         </Badge>
                      </div>
 
                      <div className="flex space-x-4">
@@ -926,8 +926,8 @@ export default function WorkspacePage() {
               <Target className="h-12 w-12 mx-auto mb-2 text-gray-300" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">Progress Tracking</h3>
               <p className="text-gray-500">Goals and tasks will be available when implemented in the workspace context.</p>
-            </div>
-          </div>
+                  </div>
+                    </div>
         </TabsContent>
 
         {/* Recent Tab */}
@@ -937,12 +937,12 @@ export default function WorkspacePage() {
                <div>
                  <h3 className="text-2xl font-bold text-gray-900">Recent Workspace Activity</h3>
                  <p className="text-gray-700 mt-1">Latest sources, messages, and workspace updates</p>
-               </div>
+                      </div>
                <Badge variant="outline" className="text-xs">
                  Real-time activity
                </Badge>
-             </div>
-             
+          </div>
+
              {/* Real-Time Activity Feed */}
              <div className="space-y-3 mt-6">
                {recentActivity && recentActivity.length > 0 ? (
@@ -956,33 +956,33 @@ export default function WorkspacePage() {
                        {activity.type === 'team' && <Users className="h-5 w-5 text-indigo-600" />}
                        {activity.type === 'api' && <Code className="h-5 w-5 text-red-600" />}
                        {activity.type === 'progress' && <Target className="h-5 w-5 text-yellow-600" />}
-                     </div>
+                          </div>
                      <div className="flex-1 min-w-0">
                        <p className="text-sm text-gray-900">{activity.description}</p>
                        <div className="flex items-center space-x-2 mt-1">
                          <span className="text-xs text-gray-500">{activity.user}</span>
                          <span className="text-xs text-gray-400">•</span>
                          <span className="text-xs text-gray-400">{activity.timestamp}</span>
-                       </div>
-                     </div>
+                              </div>
+                               </div>
                    </div>
                  ))
                ) : (
                  <div className="text-center py-6 text-gray-500">
                    <Clock className="h-8 w-8 mx-auto mb-2 text-gray-300" />
                    <p>No recent activity</p>
-                 </div>
-               )}
-             </div>
+                            </div>
+                          )}
+                        </div>
            </div>
 
                      {/* Recent Projects */}
            <div className="p-6 border rounded-lg">
              <div className="flex items-center justify-between mb-4">
                <h3 className="text-xl font-semibold flex items-center">
-                 <FolderOpen className="h-5 w-5 mr-2 text-purple-600" />
+               <FolderOpen className="h-5 w-5 mr-2 text-purple-600" />
                  Your Recent Projects
-               </h3>
+             </h3>
                <Badge variant="outline" className="text-xs">
                  Real-time data
                </Badge>
@@ -1029,9 +1029,9 @@ export default function WorkspacePage() {
            <div className="p-6 border rounded-lg">
              <div className="flex items-center justify-between mb-4">
                <h3 className="text-xl font-semibold flex items-center">
-                 <FileText className="h-5 w-5 mr-2 text-blue-600" />
+               <FileText className="h-5 w-5 mr-2 text-blue-600" />
                  Your Recently Shared Sources
-               </h3>
+             </h3>
                <Badge variant="outline" className="text-xs">
                  Real-time sources
                </Badge>
@@ -1079,9 +1079,9 @@ export default function WorkspacePage() {
           <div className="p-6 border rounded-lg">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-semibold flex items-center">
-                <MessageSquare className="h-5 w-5 mr-2 text-green-600" />
+              <MessageSquare className="h-5 w-5 mr-2 text-green-600" />
                 Your Recent Messages
-              </h3>
+            </h3>
               <Badge variant="outline" className="text-xs">
                 Real-time messages
               </Badge>
@@ -1118,7 +1118,7 @@ export default function WorkspacePage() {
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <div className="flex items-center space-x-3">
-              <DialogTitle>Share New Source</DialogTitle>
+            <DialogTitle>Share New Source</DialogTitle>
               <Badge variant="outline" className="text-xs">
                 Real-time user data
               </Badge>
@@ -1143,20 +1143,20 @@ export default function WorkspacePage() {
                 placeholder="Describe the source"
               />
             </div>
-                        <div>
-              <Label htmlFor="type">Type</Label>
+              <div>
+                <Label htmlFor="type">Type</Label>
               <Select value={newSource.type} onValueChange={(value: "article" | "video" | "document" | "link" | "other") => setNewSource({ ...newSource, type: value })}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
+                   <SelectTrigger>
+                     <SelectValue />
+                   </SelectTrigger>
+                   <SelectContent>
                   <SelectItem value="article">Article</SelectItem>
                   <SelectItem value="video">Video</SelectItem>
                   <SelectItem value="document">Document</SelectItem>
                   <SelectItem value="link">Link</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
+                   </SelectContent>
+                 </Select>
             </div>
             <div>
               <Label htmlFor="tags">Tags (comma separated)</Label>
@@ -1301,7 +1301,7 @@ export default function WorkspacePage() {
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <div className="flex items-center space-x-3">
-              <DialogTitle>Edit My Profile</DialogTitle>
+            <DialogTitle>Edit My Profile</DialogTitle>
               <Badge variant="outline" className="text-xs">
                 Account data
               </Badge>
@@ -1331,26 +1331,26 @@ export default function WorkspacePage() {
             </div>
             <div>
               <Label htmlFor="profile-bio">Bio</Label>
-                              <Textarea
-                  id="profile-bio"
+              <Textarea
+                id="profile-bio"
                   value={editingProfile.bio}
                   onChange={(e) => setEditingProfile({ ...editingProfile, bio: e.target.value })}
-                  placeholder="Tell us about yourself"
-                  rows={3}
-                />
+                placeholder="Tell us about yourself"
+                rows={3}
+              />
             </div>
-                          <div>
-                <Label htmlFor="profile-skills">Skills (comma separated)</Label>
-                <Input
-                  id="profile-skills"
+            <div>
+              <Label htmlFor="profile-skills">Skills (comma separated)</Label>
+              <Input
+                id="profile-skills"
                   value={editingProfile.skills.join(", ")}
                   onChange={(e) => setEditingProfile({ ...editingProfile, skills: e.target.value.split(",").map(s => s.trim()).filter(s => s) })}
-                  placeholder="React, TypeScript, Node.js"
-                />
+                placeholder="React, TypeScript, Node.js"
+              />
                 <p className="text-xs text-blue-600 mt-1 font-medium">
                   Your profile information is synced to your account and visible only to you.
                 </p>
-              </div>
+            </div>
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <Label htmlFor="profile-github">GitHub URL</Label>
@@ -1402,7 +1402,7 @@ export default function WorkspacePage() {
           <DialogContent className="max-w-3xl">
             <DialogHeader>
               <div className="flex items-center space-x-3">
-                <DialogTitle>Create New Project</DialogTitle>
+              <DialogTitle>Create New Project</DialogTitle>
                 <Badge variant="outline" className="text-xs">
                   Real-time user data
                 </Badge>

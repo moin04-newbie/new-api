@@ -53,16 +53,26 @@ export default function LandingPage() {
             <div className="flex items-center space-x-4">
               {/* Modern Logo */}
               <div className="flex items-center space-x-3">
-                <div className="relative w-10 h-10">
-                  <div className={`absolute w-6 h-6 rounded-full left-0 shadow-sm transition-colors duration-300 ${
-                    isScrolled ? 'bg-[#000000]' : 'bg-[#000000]'
-                  }`}></div>
-                  <div className={`absolute w-6 h-6 rounded-full right-0 opacity-80 shadow-sm transition-colors duration-300 ${
-                    isScrolled ? 'bg-[#666666]' : 'bg-[#666666]'
-                  }`}></div>
+                <div className="relative w-10 h-10 group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-600 via-gray-700 to-gray-800 rounded-2xl animate-pulse group-hover:scale-105 transition-all duration-300"></div>
+                  <div className="absolute inset-0.5 bg-white rounded-2xl overflow-hidden">
+                    <img
+                      src="https://i.pinimg.com/736x/da/af/3c/daaf3ccf26c9ac4aef97a0bc86c87460.jpg"
+                      alt="DevHub Logo"
+                      className="w-full h-full object-cover rounded-xl filter brightness-110 contrast-110 saturate-110 transition-all duration-300 group-hover:scale-110 group-hover:brightness-125"
+                      style={{
+                        mixBlendMode: 'multiply',
+                        background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(240,240,240,0.8) 100%)'
+                      }}
+                    />
+                    {/* Cutout overlay for enhanced quality */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/10 to-transparent rounded-xl pointer-events-none"></div>
+                  </div>
+                  {/* Enhanced glow effect */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-gray-600/20 to-gray-800/20 rounded-2xl filter blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 </div>
                 <span className={`text-xl font-bold transition-colors duration-300 text-black`}>
-                  DevVerse
+                  DevHub
                 </span>
               </div>
              
@@ -80,12 +90,12 @@ export default function LandingPage() {
             {/* Right side - buttons and hamburger */}
             <div className="flex items-center space-x-4">
               <nav className="hidden md:flex items-center space-x-4">
-                <Link href="/auth/login">
+                <Link href="/auth">
                   <Button variant="outline" className="border-gray-400 text-black hover:bg-gray-100 bg-transparent hover:text-black transition-all duration-300">
                     Sign In
                   </Button>
                 </Link>
-                <Link href="/auth/signup">
+                <Link href="/auth">
                   <Button className="bg-black text-white hover:bg-gray-800 font-semibold shadow-sm transition-all duration-300">
                     Get Started
                   </Button>
@@ -552,21 +562,24 @@ export default function LandingPage() {
           </div>
          
           <div className="fade-in-up" style={{animationDelay: '1.1s'}}>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              <Link href="/auth">
-                <Button size="lg" className="bg-black text-white hover:bg-gray-800 px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 float-animation">
-                  Start Free Trial
-                  <ArrowRight className="ml-2 w-5 h-5" />
+            <div className="flex justify-center items-center mb-12">
+              <Link href="/auth/login">
+                <Button size="lg" className="bg-black text-white hover:bg-gray-800 px-12 py-6 text-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 float-animation group relative overflow-hidden">
+                  <span className="relative z-10 flex items-center">
+                    Enter
+                    <ArrowRight className="ml-3 w-6 h-6 transition-transform duration-300 group-hover:translate-x-2" />
+                  </span>
+                  {/* Arrow animation trail */}
+                  <div className="absolute inset-0 w-full h-full">
+                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                      <ArrowRight className="w-4 h-4 text-white/50 animate-ping" />
+                    </div>
+                    <div className="absolute right-6 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100">
+                      <ArrowRight className="w-3 h-3 text-white/30 animate-ping" />
+                    </div>
+                  </div>
                 </Button>
               </Link>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-gray-400 text-black hover:bg-gray-100 px-8 py-6 text-lg bg-transparent backdrop-blur-sm hover:border-gray-600 transition-all duration-300 float-animation"
-                style={{animationDelay: '0.5s'}}
-              >
-                Watch Demo
-              </Button>
             </div>
           </div>
         </div>
@@ -1715,7 +1728,7 @@ export default function LandingPage() {
             <Card className="bg-white border border-gray-200 hover:border-gray-400 transition-all duration-300 hover:shadow-lg relative group">
               <CardHeader className="text-center pb-8">
                 <CardTitle className="text-2xl font-bold text-black mb-2">Free</CardTitle>
-                <div className="text-5xl font-black text-black mb-2">$0</div>
+                <div className="text-5xl font-black text-black mb-2">₹0</div>
                 <CardDescription className="text-gray-600 text-lg">
                   Perfect for individual developers
                 </CardDescription>
@@ -1724,7 +1737,7 @@ export default function LandingPage() {
                 <div className="space-y-4 mb-8">
                   <div className="flex items-center text-black">
                     <Check className="w-5 h-5 text-gray-600 mr-3 flex-shrink-0" />
-                    <span>Up to 10 API keys</span>
+                    <span>Up to 5 API keys</span>
                   </div>
                   <div className="flex items-center text-black">
                     <Check className="w-5 h-5 text-gray-600 mr-3 flex-shrink-0" />
@@ -1736,7 +1749,7 @@ export default function LandingPage() {
                   </div>
                   <div className="flex items-center text-black">
                     <Check className="w-5 h-5 text-gray-600 mr-3 flex-shrink-0" />
-                    <span>30-day audit logs</span>
+                    <span>15-day audit logs</span>
                   </div>
                 </div>
                 <Link href="/auth">
@@ -1754,7 +1767,7 @@ export default function LandingPage() {
               </Badge>
               <CardHeader className="text-center pb-8 pt-8">
                 <CardTitle className="text-2xl font-bold text-black mb-2">Pro</CardTitle>
-                <div className="text-5xl font-black text-black mb-2">$29</div>
+                <div className="text-5xl font-black text-black mb-2">₹199</div>
                 <CardDescription className="text-gray-700 text-lg">
                   For teams and growing businesses
                 </CardDescription>
@@ -1790,11 +1803,11 @@ export default function LandingPage() {
               </CardContent>
             </Card>
 
-            {/* Enterprise Plan */}
+            {/* Yearly Plan */}
             <Card className="bg-white border border-gray-200 hover:border-gray-400 transition-all duration-300 hover:shadow-lg relative group">
               <CardHeader className="text-center pb-8">
-                <CardTitle className="text-2xl font-bold text-black mb-2">Enterprise</CardTitle>
-                <div className="text-5xl font-black text-black mb-2">Custom</div>
+                <CardTitle className="text-2xl font-bold text-black mb-2">Yearly</CardTitle>
+                <div className="text-5xl font-black text-black mb-2">₹4999</div>
                 <CardDescription className="text-gray-600 text-lg">
                   For growing organizations
                 </CardDescription>
@@ -1822,9 +1835,11 @@ export default function LandingPage() {
                     <span>Dedicated success manager</span>
                   </div>
                 </div>
-                <Button className="w-full bg-gradient-to-r from-gray-600 to-gray-800 hover:from-gray-500 hover:to-gray-700 text-white font-semibold py-3 transition-all duration-300">
-                  Contact Sales
-                </Button>
+                <Link href="/auth">
+                  <Button className="w-full bg-gradient-to-r from-gray-600 to-gray-800 hover:from-gray-500 hover:to-gray-700 text-white font-semibold py-3 transition-all duration-300">
+                    Get Started Yearly
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           </div>
@@ -2098,22 +2113,27 @@ export default function LandingPage() {
             Join thousands of developers who trust DevVerse to secure, build, and collaborate on their next big idea.
           </p>
          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-[#5B2EFF] to-[#00F6FF] hover:from-[#5B2EFF]/90 hover:to-[#00F6FF]/90 text-black font-bold px-8 py-6 rounded-xl text-lg transition-all duration-300 hover:shadow-lg hover:shadow-[#5B2EFF]/20"
-            >
-              Start Free Trial
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-           
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-2 border-[#2D2D3A] bg-[#1E1E2D]/50 hover:bg-[#2D2D3A] hover:border-[#5B2EFF]/50 text-white px-8 py-6 rounded-xl font-medium text-lg transition-all duration-300"
-            >
-              Schedule Demo
-            </Button>
+          <div className="flex justify-center items-center mb-8">
+            <Link href="/auth/login">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-[#5B2EFF] to-[#00F6FF] hover:from-[#5B2EFF]/90 hover:to-[#00F6FF]/90 text-black font-bold px-12 py-6 rounded-xl text-xl transition-all duration-300 hover:shadow-lg hover:shadow-[#5B2EFF]/20 group relative overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center">
+                  Enter
+                  <ArrowRight className="ml-3 w-6 h-6 transition-transform duration-300 group-hover:translate-x-2" />
+                </span>
+                {/* Arrow animation trail */}
+                <div className="absolute inset-0 w-full h-full">
+                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                    <ArrowRight className="w-4 h-4 text-black/50 animate-ping" />
+                  </div>
+                  <div className="absolute right-6 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100">
+                    <ArrowRight className="w-3 h-3 text-black/30 animate-ping" />
+                  </div>
+                </div>
+              </Button>
+            </Link>
           </div>
          
           <div className="flex flex-wrap justify-center items-center gap-4 text-sm text-[#A0A0A0]">

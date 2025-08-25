@@ -34,7 +34,7 @@ export default function UpgradePage() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Plan & Billing</h1>
-          <p className="text-gray-600 mt-1">Manage your KeyNest subscription</p>
+          <p className="text-gray-600 mt-1">Manage your DevHub subscription</p>
         </div>
         <Link href="/dashboard">
           <Button variant="outline">

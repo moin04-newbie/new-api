@@ -300,7 +300,7 @@ export default function SettingsPage() {
                           <CardHeader>
                 <CardTitle>Account & Security</CardTitle>
                 <CardDescription>Update your account email, password, and security settings</CardDescription>
-              </CardHeader>
+            </CardHeader>
             <CardContent className="space-y-8">
               {/* Email */}
               <div>

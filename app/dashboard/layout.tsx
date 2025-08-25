@@ -58,11 +58,26 @@ export default function DashboardLayout({
           <div className="flex flex-col h-full">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <Key className="w-5 h-5 text-white" />
+              <div className="flex items-center gap-3">
+                <div className="relative w-10 h-10 group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-600 via-gray-700 to-gray-800 rounded-2xl animate-pulse group-hover:scale-105 transition-all duration-300"></div>
+                  <div className="absolute inset-0.5 bg-white rounded-2xl overflow-hidden">
+                    <img
+                      src="https://i.pinimg.com/736x/da/af/3c/daaf3ccf26c9ac4aef97a0bc86c87460.jpg"
+                      alt="DevHub Logo"
+                      className="w-full h-full object-cover rounded-xl filter brightness-110 contrast-110 saturate-110 transition-all duration-300 group-hover:scale-110 group-hover:brightness-125"
+                      style={{
+                        mixBlendMode: 'multiply',
+                        background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(240,240,240,0.8) 100%)'
+                      }}
+                    />
+                    {/* Cutout overlay for enhanced quality */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/10 to-transparent rounded-xl pointer-events-none"></div>
+                  </div>
+                  {/* Enhanced glow effect */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-gray-600/20 to-gray-800/20 rounded-2xl filter blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 </div>
-                <span className="text-xl font-bold text-gray-900">KeyNest</span>
+                <span className="text-xl font-bold text-gray-900">DevHub</span>
               </div>
               <Button
                 variant="ghost"
@@ -240,7 +255,7 @@ export default function DashboardLayout({
             {/* Footer */}
             <div className="p-4 border-t border-gray-200">
               <div className="text-center">
-                <p className="text-xs text-gray-500">© 2024 KeyNest</p>
+                <p className="text-xs text-gray-500">© 2024 DevHub</p>
                 <p className="text-xs text-gray-400 mt-1">API Management Platform</p>
               </div>
             </div>

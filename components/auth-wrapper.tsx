@@ -117,7 +117,7 @@ export function AuthWrapper({ children }: AuthWrapperProps) {
             <div className="mx-auto w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4">
               <span className="text-white text-xl font-bold">K</span>
             </div>
-            <CardTitle className="text-2xl">Welcome to KeyNest</CardTitle>
+            <CardTitle className="text-2xl">Welcome to DevHub</CardTitle>
             <CardDescription>
               Sign in to access your workspace
             </CardDescription>
