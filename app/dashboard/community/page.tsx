@@ -571,8 +571,8 @@ export default function CommunityPage() {
                 <p className="text-sm font-medium text-slate-600">
                   Showing <span className="font-bold text-slate-900">{filteredPosts.length}</span> of <span className="font-bold text-slate-900">{posts.length}</span> posts
                   {selectedFilter !== "all" && <span className="ml-1 text-blue-600 font-semibold">({selectedFilter})</span>}
-                  {searchQuery && <span className="ml-1 text-purple-600 font-semibold">matching "{searchQuery}"</span>}
-                  {selectedTag && <span className="ml-1 text-orange-600 font-semibold">tagged with "{selectedTag}"</span>}
+                  {searchQuery && <span className="ml-1 text-purple-600 font-semibold">matching &quot;{searchQuery}&quot;</span>}
+                  {selectedTag && <span className="ml-1 text-orange-600 font-semibold">tagged with &quot;{selectedTag}&quot;</span>}
                 </p>
               </div>
               

@@ -84,7 +84,20 @@ export default function APIKeysPage() {
   const [encryptionPassphrase, setEncryptionPassphrase] = useState("")
   const [showEncryptionPassphrase, setShowEncryptionPassphrase] = useState(false)
   const [suggestedPassphrase, setSuggestedPassphrase] = useState("")
-  const [tempApiKeyData, setTempApiKeyData] = useState<any>(null)
+  const [tempApiKeyData, setTempApiKeyData] = useState<{
+    name: string;
+    serviceName: string;
+    description: string;
+    key: string;
+    project: string;
+    environment: string;
+    status: string;
+    website: string;
+    docsUrl: string;
+    monthlyLimit: number;
+    monthlyCost: number;
+    tags: string[];
+  } | null>(null)
 
   useEffect(() => {
     setPlan(getPlan())
@@ -203,7 +216,7 @@ export default function APIKeysPage() {
         key: encryptedKey,
         project: tempApiKeyData.project,
         environment: tempApiKeyData.environment,
-        status: tempApiKeyData.status,
+        status: tempApiKeyData.status as "active" | "inactive" | "expired" | "revoked",
         website: tempApiKeyData.website,
         docsUrl: tempApiKeyData.docsUrl,
         monthlyLimit: tempApiKeyData.monthlyLimit,

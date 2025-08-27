@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Key, Mail, Lock, Eye, EyeOff, User } from "lucide-react"
+import { Mail, Lock, Eye, EyeOff, User } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { signUpWithEmail, signInWithGoogle } from "@/lib/auth"
@@ -48,8 +48,8 @@ export default function SignupPage() {
     try {
       await signUpWithEmail(formData.name, formData.email, formData.password)
       router.push("/dashboard")
-    } catch (err: any) {
-      setError(err?.message || "Failed to sign up")
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to sign up")
     } finally {
       setLoading(false)
     }
@@ -61,8 +61,8 @@ export default function SignupPage() {
     try {
       await signInWithGoogle()
       router.push("/dashboard")
-    } catch (err: any) {
-      setError(err?.message || "Failed to continue with Google")
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to continue with Google")
     } finally {
       setLoading(false)
     }

@@ -6,11 +6,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ChevronDown, Plus, Settings, Users, Building2, Globe, Lock, Eye, EyeOff } from "lucide-react"
+import { ChevronDown, Plus, Settings, Building2, Globe, Lock } from "lucide-react"
 import { useWorkspace, type Workspace } from "@/lib/workspace-context"
+import { auth } from "@/lib/firebase"
 
 export function WorkspaceSwitcher() {
   const { 
@@ -33,7 +34,7 @@ export function WorkspaceSwitcher() {
     description: "",
     slug: "",
     allowGuestAccess: false,
-    defaultProjectVisibility: "private" as const,
+    defaultProjectVisibility: "private" as 'public' | 'private',
     requireApprovalForProjects: false
   })
 
@@ -43,6 +44,7 @@ export function WorkspaceSwitcher() {
         name: newWorkspaceData.name,
         description: newWorkspaceData.description,
         slug: newWorkspaceData.slug || newWorkspaceData.name.toLowerCase().replace(/\s+/g, '-'),
+        createdBy: auth.currentUser?.uid || '',
         members: [],
         settings: {
           allowGuestAccess: newWorkspaceData.allowGuestAccess,
@@ -191,7 +193,7 @@ export function WorkspaceSwitcher() {
                           <p className="text-sm text-gray-500 truncate">{workspace.description}</p>
                           <div className="flex items-center gap-2 mt-1">
                             <Badge className={getRoleBadgeColor(userRole || '')}>
-                              {userRole?.charAt(0).toUpperCase() + userRole?.slice(1)}
+                              {(userRole || '').charAt(0).toUpperCase() + (userRole || '').slice(1)}
                             </Badge>
                             {getVisibilityIcon(workspace.settings.defaultProjectVisibility)}
                             <span className="text-xs text-gray-500">

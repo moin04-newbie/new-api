@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Key, ArrowRight, Mail, Shield, Github, LogIn } from 'lucide-react'
+import { ArrowRight, Mail, Shield, LogIn } from 'lucide-react'
 
 export default function AuthGatePage() {
   const router = useRouter()
@@ -16,7 +16,7 @@ export default function AuthGatePage() {
 
   // If already authenticated, go straight to dashboard.
   useEffect(() => {
-    const unsub = (async () => {
+    (async () => {
       const { onAuthStateChanged } = await import("@/lib/auth")
       return onAuthStateChanged((user) => {
         if (user) router.replace("/dashboard")
@@ -32,8 +32,8 @@ export default function AuthGatePage() {
       const { signInWithGoogle } = await import("@/lib/auth")
       await signInWithGoogle()
       router.push("/dashboard")
-    } catch (err: any) {
-      setError(err?.message || "Failed to sign in with Google")
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to sign in with Google")
     } finally {
       setLoading(false)
     }

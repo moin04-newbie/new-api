@@ -3,6 +3,8 @@ import {
 	signInWithEmailAndPassword,
 	createUserWithEmailAndPassword,
 	signInWithPopup,
+	signInWithRedirect,
+	getRedirectResult,
 	signOut,
 	onAuthStateChanged as firebaseOnAuthStateChanged,
 	updateProfile,
@@ -29,8 +31,22 @@ export async function signUpWithEmail(name: string, email: string, password: str
 }
 
 export async function signInWithGoogle() {
-	const cred = await signInWithPopup(auth, googleProvider)
-	return cred.user
+	try {
+		const cred = await signInWithPopup(auth, googleProvider)
+		return cred.user
+	} catch (e: unknown) {
+		const code = (e as { code?: string })?.code
+		if (code === "auth/popup-blocked" || code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") {
+			await signInWithRedirect(auth, googleProvider)
+			return null
+		}
+		throw e
+	}
+}
+
+export async function completeRedirectSignIn() {
+	const result = await getRedirectResult(auth)
+	return result?.user ?? null
 }
 
 export async function signOutUser() {

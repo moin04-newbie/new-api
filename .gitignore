@@ -38,3 +38,5 @@ coverage/
 .vercel/.env
 .env.*
 !.env.example
+
+certificates

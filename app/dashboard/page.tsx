@@ -60,15 +60,13 @@ export default function DashboardPage() {
     { id: '1', name: 'Production API Key', status: 'active' },
     { id: '2', name: 'Development API Key', status: 'active' }
   ]
-  const fallbackProjects = projects.length > 0 ? projects : [
-    { id: '1', name: 'API Gateway Redesign', status: 'active' },
-    { id: '2', name: 'Mobile App Development', status: 'planning' }
-  ]
+  // Do not show mock projects; reflect real data only
+  const fallbackProjects = projects
   const fallbackWorkspaceStats = workspaceStats.totalProjects > 0 ? workspaceStats : {
-    totalProjects: 2,
-    projectProgress: 65,
-    totalBudget: 1700000,
-    spentBudget: 505000,
+    totalProjects: projects.length,
+    projectProgress: 0,
+    totalBudget: 0,
+    spentBudget: 0,
     securityScore: 100
   }
   const fallbackUserRole = userRole || 'admin'

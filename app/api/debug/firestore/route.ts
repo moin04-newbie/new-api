@@ -22,9 +22,9 @@ export async function GET() {
         apiKey: apiKeys[0] || null,
       },
     })
-  } catch (e: any) {
+  } catch (e: unknown) {
     return NextResponse.json(
-      { ok: false, error: e?.message || String(e) },
+      { ok: false, error: e instanceof Error ? e.message : String(e) },
       { status: 500 },
     )
   }

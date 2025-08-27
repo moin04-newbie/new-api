@@ -6,16 +6,12 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { 
-  BarChart3, 
   TrendingUp, 
   Clock, 
   AlertTriangle, 
   Activity, 
   Zap, 
   Calendar,
-  ArrowLeft,
-  ArrowRight,
-  RefreshCw,
   Eye,
   Download
 } from "lucide-react"
@@ -43,7 +39,7 @@ const generateMockUsageData = (days: number = 7) => {
   return data
 }
 
-const generateMockApiKeyData = () => {
+const generateMockApiKeyData = (): Array<{ name: string; requests: number; errors: number; avgResponse: number; status: 'active' | 'inactive' }> => {
   return [
     { name: 'OpenAI API', requests: 2450, errors: 12, avgResponse: 120, status: 'active' },
     { name: 'Stripe API', requests: 1890, errors: 8, avgResponse: 85, status: 'active' },
@@ -58,8 +54,8 @@ export default function AnalyticsPage() {
   const [selectedApiKey, setSelectedApiKey] = useState<string>("all")
   const [timeRange, setTimeRange] = useState<string>("7d")
   const [isLoading, setIsLoading] = useState(true)
-  const [usageData, setUsageData] = useState<any[]>([])
-  const [apiKeyData, setApiKeyData] = useState<any[]>([])
+  const [usageData, setUsageData] = useState<Array<{ requests: number; errors: number; responseTime: number; date: string }>>([])
+  const [apiKeyData, setApiKeyData] = useState<Array<{ name: string; requests: number; errors: number; avgResponse: number; status: 'active' | 'inactive' }>>([])
 
   useEffect(() => {
     const loadData = async () => {
@@ -268,7 +264,7 @@ export default function AnalyticsPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-slate-900">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/25">
-                  <BarChart3 className="h-5 w-5 text-white" />
+                  <TrendingUp className="h-5 w-5 text-white" />
                 </div>
                 Requests Over Time
               </CardTitle>

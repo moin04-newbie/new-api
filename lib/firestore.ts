@@ -62,7 +62,7 @@ export type ApiKey = {
     tags?: string[]
 }
 
-function toIso(value: any): string | undefined {
+function toIso(value: unknown): string | undefined {
     if (!value) return undefined
     if (typeof value === "string") return value
     // Firestore Timestamp
@@ -75,56 +75,59 @@ function toIso(value: any): string | undefined {
     return String(value)
 }
 
-function normalizeProject(data: any): Project {
+function normalizeProject(data: Record<string, unknown>): Project {
+    const d = data as Record<string, any>
     return {
-        id: data.id,
-        name: data.name,
-        description: data.description,
-        team: data.team,
-        members: data.members,
-        apiKeys: data.apiKeys,
-        status: data.status,
-        createdAt: toIso(data.createdAt),
-        lastActivity: toIso(data.lastActivity),
-        ownerId: data.ownerId,
+        id: String(d.id),
+        name: String(d.name),
+        description: typeof d.description === "string" ? d.description : undefined,
+        team: typeof d.team === "string" ? d.team : undefined,
+        members: typeof d.members === "number" ? d.members : undefined,
+        apiKeys: typeof d.apiKeys === "number" ? d.apiKeys : undefined,
+        status: typeof d.status === "string" ? d.status : undefined,
+        createdAt: toIso(d.createdAt),
+        lastActivity: toIso(d.lastActivity),
+        ownerId: typeof d.ownerId === "string" ? d.ownerId : undefined,
     }
 }
 
-function normalizeMember(data: any): Member {
+function normalizeMember(data: Record<string, unknown>): Member {
+    const d = data as Record<string, any>
     return {
-        id: data.id,
-        name: data.name,
-        email: data.email,
-        role: data.role,
-        avatar: data.avatar,
-        joinedAt: toIso(data.joinedAt),
-        lastActive: toIso(data.lastActive),
-        projects: Array.isArray(data.projects) ? data.projects : [],
-        ownerId: data.ownerId,
+        id: String(d.id),
+        name: String(d.name),
+        email: String(d.email),
+        role: String(d.role),
+        avatar: typeof d.avatar === "string" ? d.avatar : undefined,
+        joinedAt: toIso(d.joinedAt),
+        lastActive: toIso(d.lastActive),
+        projects: Array.isArray(d.projects) ? (d.projects as string[]) : [],
+        ownerId: typeof d.ownerId === "string" ? d.ownerId : undefined,
     }
 }
 
-function normalizeApiKey(data: any): ApiKey {
+function normalizeApiKey(data: Record<string, unknown>): ApiKey {
+    const d = data as Record<string, any>
     return {
-        id: data.id,
-        name: data.name,
-        description: data.description,
-        key: data.key,
-        project: data.project,
-        projectId: data.projectId,
-        userId: data.userId,
-        status: data.status,
-        createdAt: toIso(data.createdAt),
-        lastUsed: toIso(data.lastUsed),
-        expiresAt: toIso(data.expiresAt),
-        requests: data.requests,
-        environment: data.environment,
-        serviceName: data.serviceName,
-        website: data.website,
-        docsUrl: data.docsUrl,
-        monthlyLimit: typeof data.monthlyLimit === "number" ? data.monthlyLimit : undefined,
-        monthlyCost: typeof data.monthlyCost === "number" ? data.monthlyCost : undefined,
-        tags: Array.isArray(data.tags) ? data.tags : undefined,
+        id: String(d.id),
+        name: String(d.name),
+        description: typeof d.description === "string" ? d.description : undefined,
+        key: String(d.key),
+        project: typeof d.project === "string" ? d.project : undefined,
+        projectId: typeof d.projectId === "string" ? d.projectId : undefined,
+        userId: typeof d.userId === "string" ? d.userId : undefined,
+        status: typeof d.status === "string" ? d.status : undefined,
+        createdAt: toIso(d.createdAt),
+        lastUsed: toIso(d.lastUsed),
+        expiresAt: toIso(d.expiresAt),
+        requests: typeof d.requests === "number" ? d.requests : undefined,
+        environment: typeof d.environment === "string" ? d.environment : undefined,
+        serviceName: typeof d.serviceName === "string" ? d.serviceName : undefined,
+        website: typeof d.website === "string" ? d.website : undefined,
+        docsUrl: typeof d.docsUrl === "string" ? d.docsUrl : undefined,
+        monthlyLimit: typeof d.monthlyLimit === "number" ? d.monthlyLimit : undefined,
+        monthlyCost: typeof d.monthlyCost === "number" ? d.monthlyCost : undefined,
+        tags: Array.isArray(d.tags) ? (d.tags as string[]) : undefined,
     }
 }
 
@@ -135,7 +138,7 @@ export async function fetchProjects(): Promise<Project[]> {
 	if (!currentUserId) return []
 	const q = query(base, where("ownerId", "==", currentUserId), orderBy("name"))
 	const snapshot = await getDocs(q)
-	return snapshot.docs.map((d) => normalizeProject({ id: d.id, ...(d.data() as any) }))
+	return snapshot.docs.map((d) => normalizeProject({ id: d.id, ...(d.data() as Record<string, unknown>) }))
 }
 
 export async function createProject(input: { name: string; description?: string; team?: string }) {
@@ -157,7 +160,7 @@ export async function createProject(input: { name: string; description?: string;
 export async function getProject(id: string): Promise<Project | null> {
     const snapshot = await getDoc(doc(db, "projects", id))
     if (!snapshot.exists()) return null
-    return normalizeProject({ id: snapshot.id, ...(snapshot.data() as any) })
+    return normalizeProject({ id: snapshot.id, ...(snapshot.data() as Record<string, unknown>) })
 }
 
 export async function deleteProject(id: string) {
@@ -165,13 +168,13 @@ export async function deleteProject(id: string) {
     try {
         const currentUserId = typeof window !== "undefined" ? auth.currentUser?.uid : undefined
         const base = collection(db, "apiKeys")
-        let q: any = query(base, where("projectId", "==", id))
+        let q = query(base, where("projectId", "==", id))
         if (currentUserId) {
             q = query(base, where("projectId", "==", id), where("userId", "==", currentUserId))
         }
         const snapshot = await getDocs(q)
         await Promise.all(snapshot.docs.map((d) => deleteDoc(doc(db, "apiKeys", d.id))))
-    } catch (_) {
+    } catch {
         // Ignore cascading delete errors; primary delete still proceeds
     }
     await deleteDoc(doc(db, "projects", id))
@@ -180,7 +183,7 @@ export async function deleteProject(id: string) {
 export async function getMember(id: string): Promise<Member | null> {
     const snapshot = await getDoc(doc(db, "teamMembers", id))
     if (!snapshot.exists()) return null
-    return normalizeMember({ id: snapshot.id, ...(snapshot.data() as any) })
+    return normalizeMember({ id: snapshot.id, ...(snapshot.data() as Record<string, unknown>) })
 }
 
 export async function deleteMember(id: string) {
@@ -194,16 +197,18 @@ export async function updateMemberRole(id: string, role: string) {
 export async function fetchMembers(projectId?: string): Promise<Member[]> {
 	const base = collection(db, "teamMembers")
 	const currentUserId = typeof window !== "undefined" ? auth.currentUser?.uid : undefined
-	let q: any = base
+	let qRef: ReturnType<typeof query>
 	if (projectId && currentUserId) {
-		q = query(base, where("projects", "array-contains", projectId), where("ownerId", "==", currentUserId))
+		qRef = query(base, where("projects", "array-contains", projectId), where("ownerId", "==", currentUserId))
 	} else if (currentUserId) {
-		q = query(base, where("ownerId", "==", currentUserId))
+		qRef = query(base, where("ownerId", "==", currentUserId))
 	} else if (projectId) {
-		q = query(base, where("projects", "array-contains", projectId))
+		qRef = query(base, where("projects", "array-contains", projectId))
+	} else {
+		qRef = query(base)
 	}
-	const snapshot = await getDocs(q)
-	return snapshot.docs.map((d) => normalizeMember({ id: d.id, ...(d.data() as any) }))
+	const snapshot = await getDocs(qRef)
+	return snapshot.docs.map((d) => normalizeMember({ id: d.id, ...(d.data() as Record<string, unknown>) }))
 }
 
 export async function fetchApiKeys(input?: { projectId?: string; userId?: string } | string): Promise<ApiKey[]> {
@@ -223,17 +228,19 @@ export async function fetchApiKeys(input?: { projectId?: string; userId?: string
 		userId = auth.currentUser?.uid || undefined
 	}
 
-	let q: any = base
+	let qRef: ReturnType<typeof query>
 	if (projectId && userId) {
-		q = query(base, where("projectId", "==", projectId), where("userId", "==", userId))
+		qRef = query(base, where("projectId", "==", projectId), where("userId", "==", userId))
 	} else if (userId) {
-		q = query(base, where("userId", "==", userId))
+		qRef = query(base, where("userId", "==", userId))
 	} else if (projectId) {
-		q = query(base, where("projectId", "==", projectId))
+		qRef = query(base, where("projectId", "==", projectId))
+	} else {
+		qRef = query(base)
 	}
 
-	const snapshot = await getDocs(q)
-	return snapshot.docs.map((d) => normalizeApiKey({ id: d.id, ...(d.data() as any) }))
+	const snapshot = await getDocs(qRef)
+	return snapshot.docs.map((d) => normalizeApiKey({ id: d.id, ...(d.data() as Record<string, unknown>) }))
 }
 
 export async function createApiKey(input: {
@@ -290,7 +297,7 @@ export async function fetchMembersPreview(limitCount = 4): Promise<Member[]> {
 	if (!currentUserId) return []
 	const q = query(base, where("ownerId", "==", currentUserId), orderBy("name"), limit(limitCount))
 	const snapshot = await getDocs(q)
-	return snapshot.docs.map((d) => normalizeMember({ id: d.id, ...(d.data() as any) }))
+	return snapshot.docs.map((d) => normalizeMember({ id: d.id, ...(d.data() as Record<string, unknown>) }))
 }
 
 export async function addMember(input: { name?: string; email: string; role: string; projects?: string[] }) {

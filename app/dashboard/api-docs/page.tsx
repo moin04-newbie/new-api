@@ -324,7 +324,7 @@ console.log(completion.choices[0].message.content);`}
                   <div>
                     <CardTitle className="text-2xl">Claude API</CardTitle>
                     <CardDescription>
-                      Anthropic's advanced AI assistant for safe and helpful interactions
+                      Anthropic&apos;s advanced AI assistant for safe and helpful interactions
                     </CardDescription>
                   </div>
                 </div>

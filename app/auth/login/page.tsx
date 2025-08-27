@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Key, Mail, Lock, Eye, EyeOff } from "lucide-react"
+import { Mail, Lock, Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { signInWithEmail, signInWithGoogle } from "@/lib/auth"
@@ -30,8 +30,8 @@ export default function LoginPage() {
     try {
       await signInWithEmail(email, password)
       router.push("/dashboard")
-    } catch (err: any) {
-      setError(err?.message || "Failed to sign in")
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to sign in")
     } finally {
       setLoading(false)
     }
@@ -43,8 +43,8 @@ export default function LoginPage() {
     try {
       await signInWithGoogle()
       router.push("/dashboard")
-    } catch (err: any) {
-      setError(err?.message || "Failed to sign in with Google")
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to sign in with Google")
     } finally {
       setLoading(false)
     }
